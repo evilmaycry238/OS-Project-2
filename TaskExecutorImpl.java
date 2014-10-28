@@ -7,21 +7,28 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public class TaskExecutorImpl implements TaskExecutor {
-
+public class TaskExecutorImpl implements TaskExecutor 
+{
 	BlockingQueue<Task> fifoQueue;
-	ArrayList<TaskRunner> threadPool;
+	ArrayList<Thread> threadPool;
 	public TaskExecutorImpl(int poolSize) 
 	{
 		//Initialize the blocking queue to store task
 		fifoQueue = new ArrayBlockingQueue<Task>(poolSize);
 		
 		//Initialize the thread pool, and add threads to it. 
-		threadPool = new ArrayList<TaskRunner>();
+		threadPool = new ArrayList<Thread>();
 		for (int i = 0; i < poolSize; i++)
 		{
 			TaskRunner aTaskRunner = new TaskRunner();	
-			threadPool.add(aTaskRunner);
+			Thread aThread = new Thread(aTaskRunner);
+			threadPool.add(aThread);
+		}
+		
+		//Start all the threads in the thread pool
+		for (int i = 0; i < poolSize; i++)
+		{
+			threadPool.get(i).start();
 		}
 	}
 
@@ -37,5 +44,4 @@ public class TaskExecutorImpl implements TaskExecutor {
 			e.printStackTrace();
 		}
 	}
-
 }
