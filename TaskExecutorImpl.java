@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
+
 public class TaskExecutorImpl implements TaskExecutor 
 {
 	BlockingQueue<Task> fifoQueue;
@@ -44,4 +45,28 @@ public class TaskExecutorImpl implements TaskExecutor
 			e.printStackTrace();
 		}
 	}
+	
+	class TaskRunner implements Runnable
+	{
+		@Override
+		public void run() 
+		{
+			while(true)
+			{
+				try
+				{
+					Task task = fifoQueue.take();
+					task.execute();
+				}
+				catch(Exception e)
+				{
+					System.out.println(e);
+				}
+			}
+			
+		}
+		
+	}
 }
+
+
